@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>User Page</title>
+    <title>User Info</title>
 </head>
 <body>
-<h1>Welcome, <span th:text="${user.username}"></span></h1>
+<h1>Username: <span th:text="${user.username}"></span></h1>
 <p>User ID: <span th:text="${user.id}"></span></p>
 <p>Roles: <span th:text="${#strings.listJoin(user.roles, ', ')}"></span></p>
 </body>
