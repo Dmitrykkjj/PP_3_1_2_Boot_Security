@@ -58,9 +58,9 @@ public class Role implements GrantedAuthority {
     @Override
     public String toString() {
         if (getName().contains("ADMIN")) {
-            return "ADMIN";
+            return "Admin";
         } else {
-            return "USER";
+            return "User";
         }
     }
 }

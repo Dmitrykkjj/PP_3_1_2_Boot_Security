@@ -12,22 +12,24 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-    @PersistenceContext
-    private EntityManager entityManager;
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Override
     @Transactional
@@ -42,7 +44,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public User findUserById(Long id) {
+    public User findById(Long id) {
         Optional<User> userFromDB = userRepository.findById(id);
         return userFromDB.orElse(new User());
     }
@@ -73,29 +75,8 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public List<User> usergtList(Long idMin) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-                .setParameter("paramId", idMin).getResultList();
-    }
-
-    public boolean updateUser(User user, String role) {
-        User userFromDB = userRepository.findById(user.getId()).orElse(null);
-
-        if (userFromDB == null) {
-            return false;
-        }
-
-        Role userRole = roleRepository.findByName(role);
-        if (userRole == null) {
-            throw new RuntimeException("Role not found");
-        }
-
-        userFromDB.setUsername(user.getUsername());
-        userFromDB.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userFromDB.setRoles(Collections.singleton(userRole));
-
-        userRepository.save(userFromDB);
-        return true;
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 
     public User findByUsername(String username) {

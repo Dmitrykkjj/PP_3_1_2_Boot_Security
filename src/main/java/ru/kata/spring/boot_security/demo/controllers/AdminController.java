@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -8,8 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
 import java.util.HashSet;
@@ -20,29 +18,15 @@ import java.util.Set;
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
-    private UserService userService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private RoleRepository roleRepository;
-    private UserRepository userRepository;
+    private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final RoleService roleService;
 
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
+    public AdminController(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder,
+                           RoleService roleService) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
-    @Autowired
-    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -65,7 +49,8 @@ public class AdminController {
     }
 
     @PostMapping("/add")
-    public String addUser(@ModelAttribute("user") User user, @RequestParam("role") String role, Model model) {
+    public String addUser(@ModelAttribute("user") User user,
+                          @RequestParam("role") String role, Model model) {
         if (!userService.saveUser(user, role)) {
             model.addAttribute("message", "User already exists");
             return "add-user";
@@ -75,19 +60,19 @@ public class AdminController {
 
     @GetMapping("/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
-        User user = userService.findUserById(id);
+        User user = userService.findById(id);
         if (user == null) {
             return "redirect:/admin";
         }
         model.addAttribute("user", user);
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", roleService.findAll());
         return "edit-user";
     }
 
     @PostMapping("/update")
     public String updateUser(@ModelAttribute("user") User user, @RequestParam("roleId") Long roleId, Model model) {
-        User userFromDB = userRepository.findById(user.getId()).orElse(null);
-        Role role = roleRepository.findById(roleId).orElse(null);
+        User userFromDB = userService.findById(user.getId());
+        Role role = roleService.findById(roleId);
 
         if (userFromDB == null || role == null) {
             model.addAttribute("message", "User or role not found");
@@ -98,23 +83,28 @@ public class AdminController {
         roles.add(role);
         userFromDB.setRoles(roles);
         userFromDB.setUsername(user.getUsername());
+        userFromDB.setEmail(user.getEmail()); //new
+        userFromDB.setAge(user.getAge()); //new
         userFromDB.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        userRepository.save(userFromDB);
-        return "redirect:/admin";
+        userService.saveUser(userFromDB);
+        return "redirect:/admin/users-list";
     }
 
     @GetMapping("show-info/{id}")
     public String showInfo(@PathVariable("id") Long id, Model model) {
-        User user = userService.findUserById(id);
+        User user = userService.findById(id);
         model.addAttribute("user", user);
         return "user-info";
     }
 
     @GetMapping("/delete")
     public String deleteUser(@RequestParam("id") Long id) {
-        User user = userService.findUserById(id);
-        userRepository.delete(user);
+        userService.deleteUser(id);
         return "redirect:/admin/users-list";
+    }
+
+    public String getRoleName(String roleName) {
+        return roleName.contains("ADMIN") ? "Admin" : "User";
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,6 +16,28 @@ public class User implements UserDetails {
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "age", nullable = false)
+    private int age;
 
     @Column(name = "password", nullable = false)
     private String password;

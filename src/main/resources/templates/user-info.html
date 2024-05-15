@@ -1,11 +1,85 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>User Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        span {
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #c82333;
+        }
+
+        button.back-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.back-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-<h1>Username: <span th:text="${user.username}"></span></h1>
-<p>User ID: <span th:text="${user.id}"></span></p>
-<p>Roles: <span th:text="${#strings.listJoin(user.roles, ', ')}"></span></p>
+<div class="container">
+    <h1>User Info</h1>
+    <p>Username: <span th:text="${user.username}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Age: <span th:text="${user.age}"></span></p>
+    <p>User ID: <span th:text="${user.id}"></span></p>
+    <p>Role: <span th:text="${#strings.listJoin(user.roles, ', ')}"></span></p>
+    <br>
+    <button class="back-btn" onclick="goBack()">Go Back</button>
+    <br>
+    <br>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
 </body>
 </html>

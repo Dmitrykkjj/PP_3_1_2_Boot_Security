@@ -1,18 +1,85 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
     <title>Users</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-buttons a, .action-buttons button {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .action-buttons a.edit {
+            background-color: #007bff;
+        }
+
+        .action-buttons a.delete {
+            background-color: #dc3545;
+        }
+
+        .action-buttons a.info {
+            background-color: #28a745;
+        }
+
+        .logout-button input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+    </style>
 </head>
+
 <body>
 <h1>Users</h1>
-<a th:href="@{/admin/add}">Add User</a>
-<table border="1">
+<button type="button" onclick="location.href='/admin/add'" style="background-color: #007bff; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 3px;">Add User</button>
+<br><br>
+<table>
     <thead>
     <tr>
         <th>ID</th>
         <th>Username</th>
-        <th>Password</th>
-        <th>Roles</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th>Role</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -20,15 +87,23 @@
     <tr th:each="user : ${users}">
         <td th:text="${user.id}"></td>
         <td th:text="${user.username}"></td>
-        <td th:text="${user.password}"></td>
-        <td th:text="${user.roles}"></td>
-        <td>
-            <a th:href="@{/admin/edit/{id}(id=${user.id})}">Edit</a>
-            <a th:href="@{/admin/delete(id=${user.id})}">Delete</a>
-            <a th:href="@{/admin/show-info/{id}(id=${user.id})}">Info</a>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.age}"></td>
+        <td th:utext="${#strings.listJoin(user.roles, ', ')}"></td>
+        <td class="action-buttons">
+            <a class="edit" th:href="@{/admin/edit/{id}(id=${user.id})}">Edit</a>
+            <a class="delete" th:href="@{/admin/delete(id=${user.id})}">Delete</a>
+            <a class="info" th:href="@{/admin/show-info/{id}(id=${user.id})}">Info</a>
         </td>
     </tr>
     </tbody>
 </table>
+<br>
+<div class="logout-button">
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout" />
+    </form>
+</div>
 </body>
+
 </html>

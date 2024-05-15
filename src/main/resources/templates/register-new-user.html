@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Edit User</title>
+    <title>Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,23 +21,33 @@
 
         h1 {
             color: #007bff;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
 
         label {
             display: block;
             margin-bottom: 5px;
+            color: #555;
         }
 
         input[type="text"],
         input[type="password"],
+        input[type="email"],
+        input[type="number"],
         select {
             width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        select {
+            padding: 10px 30px 10px 10px;
         }
 
         button {
@@ -54,9 +63,6 @@
             background-color: #0056b3;
         }
 
-        form:last-child {
-            margin-top: 20px;
-        }
         input[type="submit"] {
             background-color: #dc3545;
             color: #fff;
@@ -73,45 +79,28 @@
 </head>
 <body>
 <div class="container">
-    <h1>Edit User</h1>
-    <form th:action="@{/admin/update}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <input type="hidden" th:name="id" th:value="${user.id}"/>
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" th:name="username" th:value="${user.username}"/>
+    <h1>Register New User</h1>
+    <form th:action="@{/registration/new}" method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
         </div>
-        <div>
-            <label for="email">Email:</label>
-            <input type="text" id="email" th:name="email" th:value="${user.email}"/>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
         </div>
-        <div>
-            <label for="age">Age:</label>
-            <input type="text" id="age" th:name="age" th:value="${user.age}"/>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
         </div>
-
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" th:name="password"/>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" required>
         </div>
-        <div>
-            <label for="roleId">Role:</label>
-            <select id="roleId" th:name="roleId">
-                <option th:each="role : ${roles}"
-                        th:value="${role.id}"
-                        th:text="${@adminController.getRoleName(role.name)}"
-                        th:selected="${user.roles.contains(role)}"></option>
-            </select>
-        </div>
-        <button type="submit">Save</button>
+        <button type="submit">Register</button>
     </form>
     <br>
     <button class="back-btn" onclick="goBack()">Go Back</button>
-    <br>
-
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Logout"/>
-    </form>
 </div>
 
 <script>

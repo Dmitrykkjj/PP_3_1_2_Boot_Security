@@ -1,28 +1,125 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Add User</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        select {
+            padding: 10px 30px 10px 10px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="submit"] {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-<h1>Add User</h1>
-<form th:action="@{/admin/add}" method="post">
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" name="username" required>
-    </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
-    </div>
-    <div class="form-group">
-        <label for="role">Role</label>
-        <select class="form-control" id="role" name="role">
-            <option value="ROLE_USER">User</option>
-            <option value="ROLE_ADMIN">Admin</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Add User</button>
+<div class="container">
+    <h1>Add User</h1>
+    <form th:action="@{/admin/add}" method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Role</label>
+            <select id="role" name="role">
+                <option value="ROLE_USER">User</option>
+                <option value="ROLE_ADMIN">Admin</option>
+            </select>
+        </div>
+        <button type="submit">Add User</button>
+    </form>
+    <br>
+    <button class="back-btn" onclick="goBack()">Go Back</button>
+    <br>
+    <br>
+    <form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout"/>
 </form>
 
+</div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </body>
 </html>
