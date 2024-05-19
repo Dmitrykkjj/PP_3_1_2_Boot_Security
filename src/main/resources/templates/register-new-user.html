@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Registration</title>
     <style>
         body {
@@ -17,6 +18,7 @@
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
         h1 {
@@ -25,6 +27,7 @@
 
         .form-group {
             margin-bottom: 20px;
+            text-align: left;
         }
 
         label {
@@ -75,12 +78,32 @@
         input[type="submit"]:hover {
             background-color: #c82333;
         }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
     </style>
+    <script>
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var errorMessage = document.getElementById("errorMessage");
+
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Passwords do not match!";
+                return false;
+            } else {
+                errorMessage.textContent = "";
+                return true;
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="container">
     <h1>Register New User</h1>
-    <form th:action="@{/registration/new}" method="post">
+    <form th:action="@{/registration/new}" method="post" onsubmit="return validatePassword()">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required>
@@ -89,6 +112,11 @@
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
         </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+        </div>
+        <div id="errorMessage" class="error"></div>
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
@@ -102,7 +130,6 @@
     <br>
     <button class="back-btn" onclick="goBack()">Go Back</button>
 </div>
-
 <script>
     function goBack() {
         window.history.back();
